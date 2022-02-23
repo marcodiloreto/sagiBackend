@@ -22,6 +22,11 @@ class SagiBackendApplicationTests {
 	@Test
 	void contextLoads() {
 
+		personaFindByID();
+	}
+
+	
+	private void personaFindAll() {
 		List<Persona> personas = pDao.findAll();
 
 		for (Persona p : personas) {
@@ -29,4 +34,8 @@ class SagiBackendApplicationTests {
 		}
 	}
 
+	private void personaFindByID() {
+
+		LOGGER.info(pDao.findById(2L).toString());
+	}
 }
