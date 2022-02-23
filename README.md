@@ -8,3 +8,6 @@ He intentado hacerlo pero no logro configurar el SessionFactory como Bean para t
 De todos modos estoy buscando alguna forma de prescindir del uso de Sessions de hibernate, para poder utilizar @Transactional y facilitar el flujo de datos.
 
 En este momento el Package application.repository no está siendo usado para nada, estoy usando application.JPArepository
+
+### Base de datos
+No estoy usando H2 porque ya tenía la bd corriendo para cuando emepzé a codear. Dejo el script para que la levantes como quieras.
