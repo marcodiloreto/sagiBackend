@@ -96,6 +96,7 @@ CREATE INDEX `fk_Evento_Actividad1_idx` ON `SagiDB`.`Evento` (`actividadID` ASC)
 -- -----------------------------------------------------
 -- Table `SagiDB`.`PersonaActividad`
 -- -----------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS `SagiDB`.`PersonaActividad` (
   `ID` INT NOT NULL AUTO_INCREMENT,
   `personaID` INT NOT NULL,

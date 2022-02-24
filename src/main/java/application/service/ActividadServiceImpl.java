@@ -1,23 +1,24 @@
 package application.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import application.JPArepository.IActividadDao;
 import application.modelo.Actividad;
-import application.repository.ActividadDao;
+
 
 
 
 @Service("actividadService")
-
 @Transactional(readOnly = true)
 public class ActividadServiceImpl implements ActividadService {
 
 	@Autowired
-	private ActividadDao aDao;
+	private IActividadDao aDao;
 	
 //	@Autowired
 //	private static SessionFactory sessionFactory;
@@ -30,32 +31,26 @@ public class ActividadServiceImpl implements ActividadService {
 	
 	@Override
 	public List<Actividad> findAllActividades() {
-		return aDao.findAllActividades();
+		return aDao.findAll();
 	}
 
 	@Override
 	public Actividad findActividadById(long id) {
-		Actividad a = aDao.findActividadById(id);
+		Optional<Actividad> a = aDao.findById(id);
 		//System.out.println(a);
-		return a;
+		return a.get();
 	}
 
 	@Override
 	@Transactional
-	public void insertActividad(Actividad actividad) {
-		aDao.insertActividad(actividad);
-	}
-
-	@Override
-	@Transactional
-	public void updateActividad(Actividad actividad) {
-		aDao.updateActividad(actividad);
+	public void saveActividad(Actividad actividad) {
+		aDao.save(actividad);
 	}
 
 	@Override
 	@Transactional
 	public void deleteActividad(Actividad actividad) {
-		aDao.deleteActividad(actividad);
+		aDao.delete(actividad);
 	}
 	
 	@Override

@@ -24,6 +24,8 @@ INSERT INTO Actividad VALUES
 
 SELECT * from Actividad;
 
+SELECT * from PersonaActividad;
+
 INSERT INTO PersonaActividad VALUES 
 (NULL,1,2,'ANOTADO'),
 (NULL,1,3,'ANOTADO'),

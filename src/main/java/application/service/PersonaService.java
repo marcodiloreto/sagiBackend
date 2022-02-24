@@ -9,9 +9,7 @@ public interface PersonaService {
 
     public Persona findPersonaById(Long id);
 
-    public void insertPersona(Persona persona);
-
-    public void updatePersona(Persona persona);
+    public void savePersona(Persona persona);
 
     public void deletePersona(Persona persona);
 }

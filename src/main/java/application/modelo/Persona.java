@@ -30,7 +30,7 @@ public class Persona implements Serializable {
 
 	private double promRating;
 
-	@ManyToMany(fetch=FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "PersonaActividad", joinColumns = @JoinColumn(name = "personaID"), inverseJoinColumns = @JoinColumn(name = "actividadID"))
 	private List<Actividad> actividades = new ArrayList<>();
 

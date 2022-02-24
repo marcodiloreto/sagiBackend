@@ -12,9 +12,7 @@ public interface ActividadService {
 
     public Actividad findActividadById(long id);
 
-    public void insertActividad(Actividad actividad);
-
-    public void updateActividad(Actividad actividad);
+    public void saveActividad(Actividad actividad);
 
     public void deleteActividad(Actividad actividad);
     
