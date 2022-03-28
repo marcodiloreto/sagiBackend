@@ -1,4 +1,4 @@
-package application.auxiliar;
+package application.modelo.auxiliar;
 
 public enum Rareza {
 	PORAHORANADA;

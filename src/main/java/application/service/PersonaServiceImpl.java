@@ -31,13 +31,11 @@ public class PersonaServiceImpl implements PersonaService {
     }
     
     @Override
-    @Transactional
     public void savePersona(Persona persona) {
         pDao.save(persona);
     }
 
     @Override
-    @Transactional
     public void deletePersona(Persona persona) {
         pDao.delete(persona);
     }

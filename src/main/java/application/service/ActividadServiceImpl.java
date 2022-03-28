@@ -4,66 +4,104 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import application.JPArepository.IActividadDao;
+import application.JPArepository.IDisciplinaDao;
+import application.JPArepository.IPersonaDao;
+import application.JPArepository.IPlanDao;
 import application.modelo.Actividad;
-
-
-
+import application.modelo.Persona;
+import application.modelo.Plan;
+import application.modelo.updater.ActividadUpdater;
 
 @Service("actividadService")
-@Transactional(readOnly = true)
 public class ActividadServiceImpl implements ActividadService {
 
 	@Autowired
 	private IActividadDao aDao;
+
+	@Autowired
+	private IPersonaDao pDao;
+
+	@Autowired
+	private IDisciplinaDao dDao;
 	
-//	@Autowired
-//	private static SessionFactory sessionFactory;
-//	
-//	public ActividadServiceImpl() {
-//		if (sessionFactory == null) {
-//		sessionFactory = new Configuration().configure().buildSessionFactory();
-//		}
-//	} 
+	@Autowired 
+	private IPlanDao plDao;
 	
+	@Autowired
+	private ActividadUpdater aU;
+
 	@Override
 	public List<Actividad> findAllActividades() {
-		return aDao.findAll();
+		List<Actividad> a = aDao.findAll();
+
+		return a;
 	}
 
 	@Override
-	public Actividad findActividadById(long id) {
+	public Page<Actividad> findAllActividades(Pageable pageable) {
+		Page<Actividad> a = aDao.findAll(pageable);
+		return a;
+	}
+
+	@Override
+	public Actividad findActividadById(Long id) {
 		Optional<Actividad> a = aDao.findById(id);
-		//System.out.println(a);
+		// System.out.println(a);
 		return a.get();
 	}
 
 	@Override
-	@Transactional
-	public void saveActividad(Actividad actividad) {
-		aDao.save(actividad);
+	public Actividad saveActividad(Actividad actividad) {
+		return aDao.save(actividad);
 	}
 
 	@Override
-	@Transactional
-	public void deleteActividad(Actividad actividad) {
-		aDao.delete(actividad);
+	public Boolean deleteActividad(Long id) {
+		Actividad a = aDao.getById(id);
+		a.setBajaLogica(true);
+		return aDao.save(a).getBajaLogica();
 	}
-	
+
 	@Override
-	public Actividad getDisciplina(Actividad actividad){
-		actividad = this.findActividadById(actividad.getID());
-		actividad.getDisciplina();
-		return actividad;
+	public boolean deshacerDelete(Long id) {
+		Actividad a = aDao.getById(id);
+		a.setBajaLogica(false);
+		return aDao.save(a).getBajaLogica();
+	}
+
+	public List<Persona> getInteresados(Long id) {
+		Actividad a = aDao.getById(id);
+		return a.getInteresados();
+	}
+
+	@Transactional
+	public Actividad newActividad(Actividad a, Long idUs, Long idDi) {
+		a.creadoresAdd(pDao.getById(idUs));
+		a.setDisciplina(dDao.getById(idDi));
+		return saveConPlanes(a);
 	}
 	
-//	public Session getCurrentSession() {
-//		 //
-//		 Session s = sessionFactory.openSession();
-//		 return sessionFactory.getCurrentSession();
-//	}
+	@Transactional
+	public Actividad updateActividad(Actividad nueva) {
+		Optional<Actividad> vieja = aDao.findById(nueva.getID());		
+		nueva = aU.format(nueva, vieja.get());
+		nueva = saveConPlanes(nueva);
+		return nueva;
+	}
+	
+	@Transactional
+	public Actividad saveConPlanes(Actividad a) {
+		List<Plan> planes = a.getPlanes();
+		a.setPlanes(null);
+		aDao.save(a);
+		planes.forEach( (plan)->{ plan.setActividad(a); plDao.save(plan);});
+		return aDao.getById(a.getID());
+	}
 
 }

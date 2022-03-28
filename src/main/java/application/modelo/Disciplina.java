@@ -1,9 +1,9 @@
 package application.modelo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-import application.auxiliar.Rareza;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,18 +12,29 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+import application.modelo.auxiliar.Rareza;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
 @Entity
 public class Disciplina implements Serializable{
 
+	private static final long serialVersionUID = 3202089571512147315L;
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long ID;
 	
 	private String nombre;
 	
-	private String desc;
+	private String descripcion;
 	
 	@Column(columnDefinition = "ENUM('PORAHORANADA')")
     @Enumerated(EnumType.STRING)
@@ -34,68 +45,15 @@ public class Disciplina implements Serializable{
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="disciplina")
 	private List<Actividad> actividades;
 	
-	public Disciplina(String nombre, String desc, Rareza rareza, String fotoURL) {
-		this.nombre = nombre;
-		this.desc = desc;
-		this.rareza = rareza;
-		this.fotoURL = fotoURL;
-	}
+	@ManyToMany(fetch=FetchType.LAZY)
+	@JoinTable(name = "DisciplinaHija", 
+			  joinColumns = @JoinColumn(name = "disciplinaID"), 
+			  inverseJoinColumns = @JoinColumn(name = "hijaID"))
+	private List<Disciplina> disciplinasHijas = new ArrayList<>();
 	
-	
-
-	public Disciplina(String nombre, String desc) {
-		this.nombre = nombre;
-		this.desc = desc;
-	}
-	
-	public Disciplina() {
-		
-	}
-
-
-
-	public String getNombre() {
-		return nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-
-	public String getDesc() {
-		return desc;
-	}
-
-	public void setDesc(String desc) {
-		this.desc = desc;
-	}
-
-	public Rareza getRareza() {
-		return rareza;
-	}
-
-	public void setRareza(Rareza rareza) {
-		this.rareza = rareza;
-	}
-
-	public String getFotoURL() {
-		return fotoURL;
-	}
-
-	public void setFotoURL(String fotoURL) {
-		this.fotoURL = fotoURL;
-	}
-
-	@Override
-	public String toString() {
-		return "Disciplina [ID=" + ID + ", nombre=" + nombre + ", desc=" + desc + ", rareza=" + rareza + ", fotoURL="
-				+ fotoURL + "]";
-	}
-	
+	@ManyToMany(fetch=FetchType.LAZY)
+	@JoinTable(name = "DisciplinaMadre", 
+			  joinColumns = @JoinColumn(name = "disciplinaID"), 
+			  inverseJoinColumns = @JoinColumn(name = "madreID"))
+	private List<Disciplina> disciplinasMadre = new ArrayList<>();
 }
-
-//`ID` INT NOT NULL,
-//`nombre` VARCHAR(45) NOT NULL,
-//`desc` VARCHAR(45) NOT NULL,
-//`rareza` ENUM('por ahora nada') NULL,
-//`fotoURL` VARCHAR(45) NOT NULL,
